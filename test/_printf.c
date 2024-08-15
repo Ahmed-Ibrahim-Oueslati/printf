@@ -34,7 +34,6 @@ _putchar(c);
 nb++;
 break;
 case '%':
-c = va_arg(ap, int);
 _putchar('%');
 nb++;
 break;
