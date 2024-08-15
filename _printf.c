@@ -1,19 +1,25 @@
 #include "main.h"
+
 /**
-* print_all - Prints various types of arguments based on a format string.
+ * _putchar - Entry point of the program.
+ *
+ * Description: Prints "c"  to the console.
+ *@c: char to be printed
+ * Return: Always 0 (success).
+ */
+int _putchar(char c)
+{
+		return ((write(1, &c, 1)));
+}
+
+/**
+* _printf - Prints various types of arguments based on a format string.
 *
 * @format: A string representing the types of arguments passed.
 *          'c' for char, 'i' for int, 'f' for float, 's' for string.
 * @...: A variable number of arguments.
 * Return: void.
 */
-
-
-int _putchar(char c)
-{
-	return (write(1, &c, 1));
-}
-
 int _printf(const char *format, ...)
 {
 va_list ap;
@@ -25,7 +31,7 @@ i = 0;
 j = 0;
 while (format && format[i])
 {
-switch (format[i])
+switch (format[i + 1])
 {
 case 'c':
 c = va_arg(ap, int);
