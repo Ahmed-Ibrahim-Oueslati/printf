@@ -1,20 +1,18 @@
 #include "main.h"
 /**
-* _putchar - Prints a single character to the console.
-* @c: The character to be printed.
-* Return: On success, returns the number of characters printed (1).
-* On error, -1 is returned, and errno is set appropriately.
+* _putchar - Prints a character to the console.
+* @c: The character to print.
+* Return: Number of characters printed.
 */
 int _putchar(char c)
 {
-	return ((write(1, &c, 1)));
+	return (write(1, &c, 1));
 }
 /**
-* _printf - Prints various types of arguments based on a format string.
-* @format: A string representing the types of arguments passed.
-*          'c' for char, 's' for string, '%%' for percent sign.
-* @...: A variable number of arguments.
-* Return: The number of characters printed (excluding the null byte).
+* _printf - Prints arguments based on a format string.
+* @format: The format string.
+* @...: The arguments to print.
+* Return: Number of characters printed.
 */
 int _printf(const char *format, ...)
 {
@@ -30,7 +28,7 @@ i++;
 switch (format[i])
 {
 case 'c':
-nb += 
+nb +=
 _putchar(va_arg(ap, int));
 break;
 case 's':
@@ -39,25 +37,20 @@ if (!str)
 str = "(nil)";
 j = 0;
 while (str[j])
-nb += 
+nb +=
 _putchar(str[j++]);
 break;
 case '%':
-nb += 
+nb +=
 _putchar('%');
 break;
 default:
-nb += 
+nb +=
 _putchar('%');
-nb += 
+nb +=
 _putchar(format[i]);
 break;
 }
-}
-else
-{
-	nb +=
-	_putchar(format[i]);
 }
 i++;
 }
