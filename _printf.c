@@ -1,57 +1,66 @@
 #include "main.h"
 /**
-* _putchar - Prints "c"  to the console.
-*@c: char to be printed
-* Return: Always 0 (success).
+* _putchar - Prints a single character to the console.
+* @c: The character to be printed.
+* Return: On success, returns the number of characters printed (1).
+* On error, -1 is returned, and errno is set appropriately.
 */
 int _putchar(char c)
 {
-	return (((write(1, &c, 1))));
+	return ((write(1, &c, 1)));
 }
 /**
 * _printf - Prints various types of arguments based on a format string.
 * @format: A string representing the types of arguments passed.
-*          'c' for char, 'i' for int, 'f' for float, 's' for string.
+*          'c' for char, 's' for string, '%%' for percent sign.
 * @...: A variable number of arguments.
-* Return: nb of charaters printed.
+* Return: The number of characters printed (excluding the null byte).
 */
 int _printf(const char *format, ...)
 {
 va_list ap;
-int i, j, nb;
+int i = 0, j, nb = 0;
 char *str;
-char c;
 va_start(ap, format);
-i = 0;
-nb = 0;
 while (format && format[i])
 {
+if (format[i] == '%')
+{
+i++;
 switch (format[i])
 {
 case 'c':
-c = va_arg(ap, int);
-_putchar(c);
-nb++;
-break;
-case '%':
-_putchar('%');
-nb++;
+nb += 
+_putchar(va_arg(ap, int));
 break;
 case 's':
 str = va_arg(ap, char *);
-if (str == NULL)
+if (!str)
 str = "(nil)";
 j = 0;
-while (str[j] != '\0')
-{
-_putchar(str[j]);
-nb++;
-j++;
-}
+while (str[j])
+nb += 
+_putchar(str[j++]);
 break;
+case '%':
+nb += 
+_putchar('%');
+break;
+default:
+nb += 
+_putchar('%');
+nb += 
+_putchar(format[i]);
+break;
+}
+}
+else
+{
+	nb +=
+	_putchar(format[i]);
 }
 i++;
 }
 va_end(ap);
-return (nb);
+return ((nb));
 }
