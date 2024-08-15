@@ -52,8 +52,13 @@ _putchar(format[i]);
 break;
 }
 }
+else
+{
+	nb +=
+	_putchar(format[i]);
+}
 i++;
 }
 va_end(ap);
-return ((nb));
+return (nb);
 }
