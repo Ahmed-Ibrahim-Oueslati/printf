@@ -8,6 +8,9 @@
  */
 int main(void)
 {
-	_printf("s%c", "hello", '%', 'h');
+	int o;
+	o = _printf("sc", "hello", '%');
+	printf("%d\n", o);
+
 	return (0);
 }
