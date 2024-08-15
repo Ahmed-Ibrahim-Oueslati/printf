@@ -8,6 +8,6 @@
  */
 int main(void)
 {
-	_printf("hello", '\t', 'h');
+	_printf("s%c", "hello", '%', 'h');
 	return (0);
 }
