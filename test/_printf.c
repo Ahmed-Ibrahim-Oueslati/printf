@@ -1,14 +1,5 @@
 #include "main.h"
 /**
-* _putchar - Prints a character to the console.
-* @c: The character to print.
-* Return: Number of characters printed.
-*/
-int _putchar(char c)
-{
-	return (write(1, &c, 1));
-}
-/**
 * _printf - Prints arguments based on a format string.
 * @format: The format string.
 * @...: The arguments to print.
@@ -19,6 +10,8 @@ int _printf(const char *format, ...)
 va_list ap;
 int i = 0, j, nb = 0;
 char *str;
+if (format == NULL)
+return (-1);
 va_start(ap, format);
 while (format && format[i])
 {
@@ -60,5 +53,5 @@ else
 i++;
 }
 va_end(ap);
-return ((nb));
+return (nb);
 }

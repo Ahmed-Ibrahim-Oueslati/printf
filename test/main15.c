@@ -9,7 +9,7 @@
 int main(void)
 {
 	int o;
-	o = _printf("hhhhhs%","hello", '%');
+	o = _printf(NULL,"hello", '%');
 	printf("%d\n", o);
 
 	return (0);
