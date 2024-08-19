@@ -11,7 +11,7 @@ int main(void)
 	int o;
 	o = 1;
 	
-    o = _printf("scc","hello", '%', '\n');
+    o = _printf("s%c","hello", '%', '\n');
 	printf("%d\n", o);
 
 	return (0);
