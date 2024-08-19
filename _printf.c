@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdarg.h>
 /**
 * _printf - Prints arguments based on a format string.
 * @format: The format string.
@@ -8,34 +9,43 @@
 int _printf(const char *format, ...)
 {
 va_list ap;
-int i = 0, j, nb = 0;
+int i = 0, nb = 0;
 char *str;
 if (!format)
-return (((-1)));
+return ((-1));
 va_start(ap, format);
 while (format[i])
 {
+if (format[i] == '%' && format[i + 1])
+{
+i++;
 switch (format[i])
 {
-case 'c':
-nb += _putchar(va_arg(ap, int));
-break;
 case 's':
 str = va_arg(ap, char *);
 if (!str)
 str = "(nil)";
-for (j = 0; str[j]; j++)
-nb += _putchar(str[j]);
+while (*str)
+nb += _putchar(*str++);
+break;
+case 'c':
+nb += _putchar(va_arg(ap, int));
 break;
 case '%':
 nb += _putchar('%');
 break;
 default:
+nb += _putchar('%');
 nb += _putchar(format[i]);
 break;
+}
+}
+else
+{
+	nb += _putchar(format[i]);
 }
 i++;
 }
 va_end(ap);
-return (nb);
+return ((nb));
 }
