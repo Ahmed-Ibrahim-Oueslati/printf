@@ -11,13 +11,10 @@ va_list ap;
 int i = 0, j, nb = 0;
 char *str;
 if (!format)
-return ((-1));
+return (((-1)));
 va_start(ap, format);
 while (format[i])
 {
-if (format[i] == '%')
-{
-i++;
 switch (format[i])
 {
 case 'c':
@@ -34,14 +31,11 @@ case '%':
 nb += _putchar('%');
 break;
 default:
-nb += _putchar('%') + _putchar(format[i]);
+nb += _putchar(format[i]);
 break;
 }
-}
-else
-nb += _putchar(format[i]);
 i++;
 }
 va_end(ap);
-return ((nb));
+return (nb);
 }
