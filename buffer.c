@@ -1,5 +1,4 @@
-#include <unistd.h>
-#define BUFFER_SIZE 1024
+#include "main.h"
 /**
 * flush_buffer - Writes the contents of the buffer to stdout and resets the buffer index.
 * @buffer: The buffer containing the data to be written.
