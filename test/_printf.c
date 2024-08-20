@@ -1,6 +1,4 @@
 #include "main.h"
-#include <stdarg.h>
-#include <stdio.h>
 /**
 * _printf - Prints various types of arguments based on a format string.
 * @format: A string representing the types of arguments passed.
