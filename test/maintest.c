@@ -10,7 +10,7 @@ int main(void)
 {
 	int o;
   
-	o =  _printf("%cc", '%', 'v', '\n');
+	o =  _printf("%%c", '%', 'v', '\n');
 	printf("%d\n", o);
 
 	return (0);

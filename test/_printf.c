@@ -1,33 +1,28 @@
 #include "main.h"
-#include <stdarg.h>
-#include <stdio.h>
 /**
 * _printf - Prints various types of arguments based on a format string.
 * @format: A string representing the types of arguments passed.
-*          'c' for char, 's' for string.
+*          'c' for char, 's' for string, and '%%' for a literal '%'.
 * @...: A variable number of arguments.
-* Return: Number of characters printed.
+* Return: Number of characters printed or -1 on error.
 */
 int _printf(const char *format, ...)
 {
 va_list ap;
-int i, j, nb;
+int i = 0, j, nb = 0;
 char *str;
 char c;
-int found = nb = 0;
+int found = 0;
 if (!format)
-return (((-1)));
+return ((-1));
 va_start(ap, format);
 while (format[i])
 {
+if (format[i] == '%')
+{
+i++;
 switch (format[i])
 {
-case '%':
-c = va_arg(ap, int);
-_putchar(c);
-nb++;
-found = 1;
-break;
 case 'c':
 c = va_arg(ap, int);
 _putchar(c);
@@ -47,8 +42,19 @@ j++;
 }
 found = 1;
 break;
+case '%':
+_putchar('%');
+nb++;
+found = 1;
+break;
 default:
 break;
+}
+}
+else
+{
+_putchar(format[i]);
+nb++;
 }
 i++;
 }
