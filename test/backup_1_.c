@@ -1,6 +1,4 @@
 #include "main.h"
-#include <stdarg.h>
-#include <stdio.h>
 /**
 * _printf - Prints various types of arguments based on a format string.
 * @format: A string representing the types of arguments passed.
@@ -14,9 +12,10 @@ va_list ap;
 int i, j, nb;
 char *str;
 char c;
-int found = nb = 0;
+i = 0;
+nb = 0;
 if (!format)
-return (((-1)));
+return ((-1));
 va_start(ap, format);
 while (format[i])
 {
@@ -26,7 +25,6 @@ case 'c':
 c = va_arg(ap, int);
 _putchar(c);
 nb++;
-found = 1;
 break;
 case 's':
 str = va_arg(ap, char *);
@@ -39,15 +37,14 @@ _putchar(str[j]);
 nb++;
 j++;
 }
-found = 1;
 break;
 default:
+_putchar(format[i]);
+nb++;
 break;
 }
 i++;
 }
 va_end(ap);
-if (!found)
-return ((0));
 return ((nb));
 }
