@@ -22,12 +22,6 @@ while (format[i])
 {
 switch (format[i])
 {
-case '%':
-c = va_arg(ap, int);
-_putchar(c);
-nb++;
-found = 1;
-break;
 case 'c':
 c = va_arg(ap, int);
 _putchar(c);
