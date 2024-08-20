@@ -9,8 +9,8 @@
 int main(void)
 {
 	int o;
+       _printf("scc","hello", 's', '\n');
 	o =  _printf("scc","hello", 's', '\n');
-
 	printf("%d\n", o);
 
 	return (0);

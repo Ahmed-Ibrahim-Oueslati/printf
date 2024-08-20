@@ -12,21 +12,19 @@ va_list ap;
 int i, j, nb;
 char *str;
 char c;
+va_start(ap, format);
 i = 0;
 nb = 0;
-if (!format)
-return ((-1));
-va_start(ap, format);
-while (format[i])
+while (format && format[i])
 {
 switch (format[i])
 {
-case 'c':
+case 'c': 
 c = va_arg(ap, int);
 _putchar(c);
 nb++;
 break;
-case 's':
+case 's': 
 str = va_arg(ap, char *);
 if (str == NULL)
 str = "(nil)";
@@ -38,13 +36,14 @@ nb++;
 j++;
 }
 break;
-default:
+default: 
 _putchar(format[i]);
 nb++;
 break;
 }
 i++;
 }
+_putchar('\n');
 va_end(ap);
 return ((nb));
 }
