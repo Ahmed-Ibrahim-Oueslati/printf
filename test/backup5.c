@@ -3,9 +3,7 @@
 * _printf - Prints various types of arguments based on a format string.
 * @format: A string representing the types of arguments passed.
 *          'c' for char, 's' for string, 'd' or 'i' for integers,
-*          'b' for binary, 'u' for unsigned, 'o' for octal,
-*          'x' for hex (lowercase), 'X' for hex (uppercase),
-*          and '%%' for a literal '%'.
+*          'b' for binary representation, and '%%' for a literal '%'.
 * @...: A variable number of arguments.
 * Return: Number of characters printed or -1 on error.
 */
@@ -16,7 +14,7 @@ int i = 0, j, nb = 0, length;
 char *str;
 char c;
 int num;
-unsigned int unsigned_num;
+unsigned int bin_num;
 char buffer[50];
 if (!format)
 return ((-1));
@@ -58,46 +56,8 @@ j++;
 }
 break;
 case 'b':
-unsigned_num = va_arg(ap, unsigned int);
-length = int_to_binary(unsigned_num, buffer, sizeof(buffer));
-for (j = 0; j < length; j++)
-{
-_putchar(buffer[j]);
-nb++;
-}
-break;
-case 'u':
-unsigned_num = va_arg(ap, unsigned int);
-sprintf(buffer, "%u", unsigned_num);
-j = 0;
-while (buffer[j] != '\0')
-{
-_putchar(buffer[j]);
-nb++;
-j++;
-}
-break;
-case 'o':
-unsigned_num = va_arg(ap, unsigned int);
-length = int_to_base(unsigned_num, buffer, sizeof(buffer), 8, 0);
-for (j = 0; j < length; j++)
-{
-_putchar(buffer[j]);
-nb++;
-}
-break;
-case 'x':
-unsigned_num = va_arg(ap, unsigned int);
-length = int_to_base(unsigned_num, buffer, sizeof(buffer), 16, 0);
-for (j = 0; j < length; j++)
-{
-_putchar(buffer[j]);
-nb++;
-}
-break;
-case 'X':
-unsigned_num = va_arg(ap, unsigned int);
-length = int_to_base(unsigned_num, buffer, sizeof(buffer), 16, 1);
+bin_num = va_arg(ap, unsigned int);
+length = int_to_binary(bin_num, buffer, sizeof(buffer));
 for (j = 0; j < length; j++)
 {
 _putchar(buffer[j]);
