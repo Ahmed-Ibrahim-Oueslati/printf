@@ -25,13 +25,13 @@ return ((0));
 int _printf(const char *format, ...)
 {
 va_list ap;
-int i = 0, j, nb = 0, buffer_index = 0;
-char buffer[BUFFER_SIZE];
+int i = 0, j, nb = 0, buffer_index = 0, length;
 char *str;
 char c;
 int num;
 unsigned int unsigned_num;
 char temp_buffer[50]; 
+char buffer[BUFFER_SIZE];
 if (!format)
 return ((-1));
 va_start(ap, format);
@@ -62,55 +62,59 @@ break;
 case 'd':
 case 'i':
 num = va_arg(ap, int);
-j = sprintf(temp_buffer, "%d", num);
-for (int k = 0; k < j; k++)
+sprintf(temp_buffer, "%d", num);
+j = 0;
+while (temp_buffer[j] != '\0')
 {
-buffer[buffer_index++] = temp_buffer[k];
+buffer[buffer_index++] = temp_buffer[j];
 nb++;
+j++;
 }
 break;
 case 'b':
 unsigned_num = va_arg(ap, unsigned int);
-j = int_to_binary(unsigned_num, temp_buffer, sizeof(temp_buffer));
-for (int k = 0; k < j; k++)
+length = int_to_binary(unsigned_num, temp_buffer, sizeof(temp_buffer));
+for (j = 0; j < length; j++)
 {
-buffer[buffer_index++] = temp_buffer[k];
+buffer[buffer_index++] = temp_buffer[j];
 nb++;
 }
 break;
 case 'u':
 unsigned_num = va_arg(ap, unsigned int);
-j = sprintf(temp_buffer, "%u", unsigned_num);
-for (int k = 0; k < j; k++)
+sprintf(temp_buffer, "%u", unsigned_num);
+j = 0;
+while (temp_buffer[j] != '\0')
 {
-buffer[buffer_index++] = temp_buffer[k];
+buffer[buffer_index++] = temp_buffer[j];
 nb++;
+j++;
 }
 break;
 case 'o':
 unsigned_num = va_arg(ap, unsigned int);
-j = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 8, 0);
-for (int k = 0; k < j; k++)
+length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 8, 0);
+for (j = 0; j < length; j++)
 {
-buffer[buffer_index++] = temp_buffer[k];
+buffer[buffer_index++] = temp_buffer[j];
 nb++;
 }
 break;
 case 'x':
 unsigned_num = va_arg(ap, unsigned int);
-j = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 0);
-for (int k = 0; k < j; k++)
+length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 0);
+for (j = 0; j < length; j++)
 {
-buffer[buffer_index++] = temp_buffer[k];
+buffer[buffer_index++] = temp_buffer[j];
 nb++;
 }
 break;
 case 'X':
 unsigned_num = va_arg(ap, unsigned int);
-j = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 1);
-for (int k = 0; k < j; k++)
+length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 1);
+for (j = 0; j < length; j++)
 {
-buffer[buffer_index++] = temp_buffer[k];
+buffer[buffer_index++] = temp_buffer[j];
 nb++;
 }
 break;
