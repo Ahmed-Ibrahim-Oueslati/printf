@@ -14,7 +14,6 @@ char *str;
 char c;
 va_start(ap, format);
 i = 0;
-j = 0;
 nb = 0;
 while (format && format[i])
 {
@@ -34,6 +33,7 @@ case 's':
 str = va_arg(ap, char *);
 if (str == NULL)
 str = "(nil)";
+j = 0;
 while (str[j] != '\0')
 {
 _putchar(str[j]);
