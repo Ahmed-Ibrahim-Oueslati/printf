@@ -6,6 +6,7 @@
 *          'c' for char, 's' for string, 'd' or 'i' for integers,
 *          'b' for binary, 'u' for unsigned, 'o' for octal,
 *          'x' for hex (lowercase), 'X' for hex (uppercase),
+*          'S' for string with non-printable characters as \xXX,
 *          and '%%' for a literal '%'.
 * @...: A variable number of arguments.
 * Return: Number of characters printed or -1 on error.
@@ -18,7 +19,7 @@ char *str;
 char c;
 int num;
 unsigned int unsigned_num;
-char temp_buffer[50]; 
+char temp_buffer[50];
 char buffer[BUFFER_SIZE];
 if (!format)
 return ((-1));
@@ -44,6 +45,30 @@ while (str[j] != '\0')
 {
 buffer[buffer_index++] = str[j];
 nb++;
+j++;
+}
+break;
+case 'S':
+str = va_arg(ap, char *);
+if (str == NULL)
+str = "(nil)";
+j = 0;
+while (str[j] != '\0')
+{
+if (str[j] < 32 || str[j] >= 127)
+{
+buffer[buffer_index++] = '\\';
+buffer[buffer_index++] = 'x';
+sprintf(temp_buffer, "%02X", (unsigned char)str[j]);
+buffer[buffer_index++] = temp_buffer[0];
+buffer[buffer_index++] = temp_buffer[1];
+nb += 4;
+}
+else
+{
+buffer[buffer_index++] = str[j];
+nb++;
+}
 j++;
 }
 break;
