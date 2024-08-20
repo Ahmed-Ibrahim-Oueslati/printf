@@ -5,3 +5,4 @@
 ./empty_line.sh "$1"
 ./return.sh "$1"
 ./tab.sh "$1"
+ ./comments_remover.sh "$1"
