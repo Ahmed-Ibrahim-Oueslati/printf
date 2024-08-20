@@ -16,7 +16,7 @@ char *str;
 char c;
 int found = nb = 0;
 if (!format)
-return (((-1)));
+return (-1);
 va_start(ap, format);
 while (format[i])
 {
@@ -55,5 +55,5 @@ i++;
 va_end(ap);
 if (!found)
 return ((0));
-return ((nb));
+return (nb);
 }
