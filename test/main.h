@@ -6,6 +6,7 @@
 #include <stdarg.h>
 int _printf(const char *format, ...);
 int _putchar(char c);
+int int_to_binary(unsigned int num, char *buffer, int buffer_size);
 
 
 #endif 
