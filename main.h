@@ -7,6 +7,7 @@
 int _printf(const char *format, ...);
 int _putchar(char c);
 void select_f(char spe, int (**p)(va_list));
+int print_int(int n);
 
 
 #endif 
