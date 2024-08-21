@@ -7,7 +7,7 @@
 *          'b' for binary, 'u' for unsigned, 'o' for octal,
 *          'x' for hex (lowercase), 'X' for hex (uppercase),
 *          'S' for string with non-printable characters as \xXX,
-*          'p' for pointer, and '%%' for a literal '%'.
+*          and '%%' for a literal '%'.
 * @...: A variable number of arguments.
 * Return: Number of characters printed or -1 on error.
 */
@@ -19,7 +19,6 @@ char *str;
 char c;
 int num;
 unsigned int unsigned_num;
-void *ptr;
 char temp_buffer[50];
 char buffer[BUFFER_SIZE];
 if (!format)
@@ -131,34 +130,6 @@ for (j = 0; j < length; j++)
 buffer[buffer_index++] = temp_buffer[j];
 nb++;
 }
-break;
-case 'p':
-ptr = va_arg(ap, void *);
-if (ptr == NULL)
-{
-str = "(nil)";
-j = 0;
-while (str[j] != '\0')
-{
-buffer[buffer_index++] = str[j];
-nb++;
-j++;
-}
-}
-else
-{
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'x';
-sprintf(temp_buffer, "%lx", (unsigned long)ptr);
-j = 0;
-while (temp_buffer[j] != '\0')
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-j++;
-}
-}
-nb += 2; 
 break;
 case '%':
 buffer[buffer_index++] = '%';
