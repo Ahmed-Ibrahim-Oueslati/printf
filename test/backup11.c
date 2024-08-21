@@ -24,8 +24,6 @@ char temp_buffer[50];
 char buffer[BUFFER_SIZE];
 char flag_plus = 0, flag_space = 0, flag_hash = 0;
 char length_modifier = 0;
-int field_width = 0;
-char pad_char = ' ';
 if (!format)
 return ((-1));
 va_start(ap, format);
@@ -34,11 +32,8 @@ while (format[i])
 if (format[i] == '%')
 {
 i++;
-
 flag_plus = flag_space = flag_hash = 0;
 length_modifier = 0;
-field_width = 0;
-pad_char = ' ';
 
 while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
 {
@@ -51,26 +46,11 @@ flag_hash = 1;
 i++;
 }
 
-if (format[i] >= '0' && format[i] <= '9')
-{
-if (format[i] == '0')
-{
-pad_char = '0';
-i++;
-}
-while (format[i] >= '0' && format[i] <= '9')
-{
-field_width = field_width * 10 + (format[i] - '0');
-i++;
-}
-}
-
 if (format[i] == 'l' || format[i] == 'h')
 {
 length_modifier = format[i];
 i++;
 }
-
 switch (format[i])
 {
 case 'c':
@@ -82,22 +62,35 @@ case 's':
 str = va_arg(ap, char *);
 if (str == NULL)
 str = "(nil)";
-length = 0;
-while (str[length] != '\0')
-length++;
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 j = 0;
 while (str[j] != '\0')
 {
 buffer[buffer_index++] = str[j];
 nb++;
+j++;
+}
+break;
+case 'S':
+str = va_arg(ap, char *);
+if (str == NULL)
+str = "(nil)";
+j = 0;
+while (str[j] != '\0')
+{
+if (str[j] < 32 || str[j] >= 127)
+{
+buffer[buffer_index++] = '\\';
+buffer[buffer_index++] = 'x';
+sprintf(temp_buffer, "%02X", (unsigned char)str[j]);
+buffer[buffer_index++] = temp_buffer[0];
+buffer[buffer_index++] = temp_buffer[1];
+nb += 4;
+}
+else
+{
+buffer[buffer_index++] = str[j];
+nb++;
+}
 j++;
 }
 break;
@@ -120,17 +113,6 @@ buffer[buffer_index++] = ' ';
 nb++;
 }
 sprintf(temp_buffer, "%ld", num);
-length = 0;
-while (temp_buffer[length] != '\0')
-length++;
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 j = 0;
 while (temp_buffer[j] != '\0')
 {
@@ -142,14 +124,6 @@ break;
 case 'b':
 unsigned_num = va_arg(ap, unsigned int);
 length = int_to_binary(unsigned_num, temp_buffer, sizeof(temp_buffer));
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 for (j = 0; j < length; j++)
 {
 buffer[buffer_index++] = temp_buffer[j];
@@ -164,17 +138,6 @@ unsigned_num = (unsigned short)va_arg(ap, unsigned int);
 else
 unsigned_num = va_arg(ap, unsigned int);
 sprintf(temp_buffer, "%lu", unsigned_num);
-length = 0;
-while (temp_buffer[length] != '\0')
-length++;
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 j = 0;
 while (temp_buffer[j] != '\0')
 {
@@ -196,14 +159,6 @@ buffer[buffer_index++] = '0';
 nb++;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 8, 0);
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 for (j = 0; j < length; j++)
 {
 buffer[buffer_index++] = temp_buffer[j];
@@ -224,14 +179,6 @@ buffer[buffer_index++] = 'x';
 nb += 2;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 0);
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 for (j = 0; j < length; j++)
 {
 buffer[buffer_index++] = temp_buffer[j];
@@ -252,14 +199,6 @@ buffer[buffer_index++] = 'X';
 nb += 2;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 1);
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 for (j = 0; j < length; j++)
 {
 buffer[buffer_index++] = temp_buffer[j];
@@ -271,17 +210,6 @@ ptr = va_arg(ap, void *);
 if (ptr == NULL)
 {
 str = "(nil)";
-length = 0;
-while (str[length] != '\0')
-length++;
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 j = 0;
 while (str[j] != '\0')
 {
@@ -295,17 +223,6 @@ else
 buffer[buffer_index++] = '0';
 buffer[buffer_index++] = 'x';
 sprintf(temp_buffer, "%lx", (unsigned long)ptr);
-length = 0;
-while (temp_buffer[length] != '\0')
-length++;
-if (length + 2 < field_width)
-{
-for (j = 0; j < field_width - (length + 2); j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 j = 0;
 while (temp_buffer[j] != '\0')
 {
@@ -313,8 +230,8 @@ buffer[buffer_index++] = temp_buffer[j];
 nb++;
 j++;
 }
-nb += 2;
 }
+nb += 2;
 break;
 case '%':
 buffer[buffer_index++] = '%';
