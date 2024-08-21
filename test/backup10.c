@@ -17,13 +17,12 @@ va_list ap;
 int i = 0, j, nb = 0, buffer_index = 0, length;
 char *str;
 char c;
-long num;
-unsigned long unsigned_num;
+int num;
+unsigned int unsigned_num;
 void *ptr;
 char temp_buffer[50];
 char buffer[BUFFER_SIZE];
 char flag_plus = 0, flag_space = 0, flag_hash = 0;
-char length_modifier = 0;
 if (!format)
 return ((-1));
 va_start(ap, format);
@@ -32,8 +31,8 @@ while (format[i])
 if (format[i] == '%')
 {
 i++;
+
 flag_plus = flag_space = flag_hash = 0;
-length_modifier = 0;
 
 while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
 {
@@ -43,12 +42,6 @@ else if (format[i] == ' ')
 flag_space = 1;
 else if (format[i] == '#')
 flag_hash = 1;
-i++;
-}
-
-if (format[i] == 'l' || format[i] == 'h')
-{
-length_modifier = format[i];
 i++;
 }
 switch (format[i])
@@ -96,11 +89,6 @@ j++;
 break;
 case 'd':
 case 'i':
-if (length_modifier == 'l')
-num = va_arg(ap, long);
-else if (length_modifier == 'h')
-num = (short)va_arg(ap, int);
-else
 num = va_arg(ap, int);
 if (flag_plus && num >= 0)
 {
@@ -112,7 +100,7 @@ else if (flag_space && num >= 0)
 buffer[buffer_index++] = ' ';
 nb++;
 }
-sprintf(temp_buffer, "%ld", num);
+sprintf(temp_buffer, "%d", num);
 j = 0;
 while (temp_buffer[j] != '\0')
 {
@@ -131,13 +119,8 @@ nb++;
 }
 break;
 case 'u':
-if (length_modifier == 'l')
-unsigned_num = va_arg(ap, unsigned long);
-else if (length_modifier == 'h')
-unsigned_num = (unsigned short)va_arg(ap, unsigned int);
-else
 unsigned_num = va_arg(ap, unsigned int);
-sprintf(temp_buffer, "%lu", unsigned_num);
+sprintf(temp_buffer, "%u", unsigned_num);
 j = 0;
 while (temp_buffer[j] != '\0')
 {
@@ -147,11 +130,6 @@ j++;
 }
 break;
 case 'o':
-if (length_modifier == 'l')
-unsigned_num = va_arg(ap, unsigned long);
-else if (length_modifier == 'h')
-unsigned_num = (unsigned short)va_arg(ap, unsigned int);
-else
 unsigned_num = va_arg(ap, unsigned int);
 if (flag_hash && unsigned_num != 0)
 {
@@ -166,11 +144,6 @@ nb++;
 }
 break;
 case 'x':
-if (length_modifier == 'l')
-unsigned_num = va_arg(ap, unsigned long);
-else if (length_modifier == 'h')
-unsigned_num = (unsigned short)va_arg(ap, unsigned int);
-else
 unsigned_num = va_arg(ap, unsigned int);
 if (flag_hash && unsigned_num != 0)
 {
@@ -186,11 +159,6 @@ nb++;
 }
 break;
 case 'X':
-if (length_modifier == 'l')
-unsigned_num = va_arg(ap, unsigned long);
-else if (length_modifier == 'h')
-unsigned_num = (unsigned short)va_arg(ap, unsigned int);
-else
 unsigned_num = va_arg(ap, unsigned int);
 if (flag_hash && unsigned_num != 0)
 {
