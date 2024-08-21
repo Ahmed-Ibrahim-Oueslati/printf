@@ -3,12 +3,6 @@
 /**
 * _printf - Prints various types of arguments based on a format string.
 * @format: A string representing the types of arguments passed.
-*          'c' for char, 's' for string, 'd' or 'i' for integers,
-*          'b' for binary, 'u' for unsigned, 'o' for octal,
-*          'x' for hex (lowercase), 'X' for hex (uppercase),
-*          'S' for string with non-printable characters as \xXX,
-*          'p' for pointer, and '%%' for a literal '%'.
-* @...: A variable number of arguments.
 * Return: Number of characters printed or -1 on error.
 */
 int _printf(const char *format, ...)
@@ -22,26 +16,26 @@ unsigned long unsigned_num;
 void *ptr;
 char temp_buffer[50];
 char buffer[BUFFER_SIZE];
-char flag_plus = 0, flag_space = 0, flag_hash = 0;
+char flag_plus = 0, flag_space = 0, flag_hash = 0, flag_minus = 0;
 char length_modifier = 0;
 int field_width = 0;
 int precision = -1;
 char pad_char = ' ';
 if (!format)
-return ((-1));
+return (((-1)));
 va_start(ap, format);
 while (format[i])
 {
 if (format[i] == '%')
 {
 i++;
-flag_plus = flag_space = flag_hash = 0;
+flag_plus = flag_space = flag_hash = flag_minus = 0;
 length_modifier = 0;
 field_width = 0;
 precision = -1;
 pad_char = ' ';
 
-while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
+while (format[i] == '+' || format[i] == ' ' || format[i] == '#' || format[i] == '-')
 {
 if (format[i] == '+')
 flag_plus = 1;
@@ -49,12 +43,14 @@ else if (format[i] == ' ')
 flag_space = 1;
 else if (format[i] == '#')
 flag_hash = 1;
+else if (format[i] == '-')
+flag_minus = 1;
 i++;
 }
 
 if (format[i] >= '0' && format[i] <= '9')
 {
-if (format[i] == '0')
+if (format[i] == '0' && !flag_minus) 
 {
 pad_char = '0';
 i++;
@@ -99,20 +95,31 @@ while (str[length] != '\0')
 length++;
 if (precision >= 0 && precision < length)
 length = precision;
-if (length < field_width)
+if (flag_minus) 
+{
+for (j = 0; j < length && str[j] != '\0'; j++)
+{
+buffer[buffer_index++] = str[j];
+nb++;
+}
+for (; j < field_width; j++)
+{
+buffer[buffer_index++] = ' ';
+nb++;
+}
+}
+else 
 {
 for (j = 0; j < field_width - length; j++)
 {
 buffer[buffer_index++] = pad_char;
 nb++;
 }
-}
-j = 0;
-while (j < length && str[j] != '\0')
+for (j = 0; j < length && str[j] != '\0'; j++)
 {
 buffer[buffer_index++] = str[j];
 nb++;
-j++;
+}
 }
 break;
 case 'd':
@@ -137,95 +144,21 @@ sprintf(temp_buffer, "%ld", num);
 length = 0;
 while (temp_buffer[length] != '\0')
 length++;
-if (precision > length)
+if (flag_minus) 
 {
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-}
-else if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
-j = 0;
-while (temp_buffer[j] != '\0')
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-j++;
-}
-break;
-case 'b':
-unsigned_num = va_arg(ap, unsigned int);
-length = int_to_binary(unsigned_num, temp_buffer, sizeof(temp_buffer));
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
 for (j = 0; j < length; j++)
 {
 buffer[buffer_index++] = temp_buffer[j];
 nb++;
 }
-break;
-case 'u':
-if (length_modifier == 'l')
-unsigned_num = va_arg(ap, unsigned long);
-else if (length_modifier == 'h')
-unsigned_num = (unsigned short)va_arg(ap, unsigned int);
-else
-unsigned_num = va_arg(ap, unsigned int);
-sprintf(temp_buffer, "%lu", unsigned_num);
-length = 0;
-while (temp_buffer[length] != '\0')
-length++;
-if (precision > length)
+for (; j < field_width; j++)
 {
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
+buffer[buffer_index++] = ' ';
 nb++;
 }
 }
-else if (length < field_width)
+else 
 {
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
-j = 0;
-while (temp_buffer[j] != '\0')
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-j++;
-}
-break;
-case 'o':
-if (length_modifier == 'l')
-unsigned_num = va_arg(ap, unsigned long);
-else if (length_modifier == 'h')
-unsigned_num = (unsigned short)va_arg(ap, unsigned int);
-else
-unsigned_num = va_arg(ap, unsigned int);
-if (flag_hash && unsigned_num != 0)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 8, 0);
 if (precision > length)
 {
 for (j = 0; j < precision - length; j++)
@@ -247,133 +180,10 @@ for (j = 0; j < length; j++)
 buffer[buffer_index++] = temp_buffer[j];
 nb++;
 }
-break;
-case 'x':
-if (length_modifier == 'l')
-unsigned_num = va_arg(ap, unsigned long);
-else if (length_modifier == 'h')
-unsigned_num = (unsigned short)va_arg(ap, unsigned int);
-else
-unsigned_num = va_arg(ap, unsigned int);
-if (flag_hash && unsigned_num != 0)
-{
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'x';
-nb += 2;
-}
-length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 0);
-if (precision > length)
-{
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-}
-else if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
-for (j = 0; j < length; j++)
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
 }
 break;
-case 'X':
-if (length_modifier == 'l')
-unsigned_num = va_arg(ap, unsigned long);
-else if (length_modifier == 'h')
-unsigned_num = (unsigned short)va_arg(ap, unsigned int);
-else
-unsigned_num = va_arg(ap, unsigned int);
-if (flag_hash && unsigned_num != 0)
-{
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'X';
-nb += 2;
-}
-length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 1);
-if (precision > length)
-{
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-}
-else if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
-for (j = 0; j < length; j++)
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-}
-break;
-case 'p':
-ptr = va_arg(ap, void *);
-if (ptr == NULL)
-{
-str = "(nil)";
-length = 0;
-while (str[length] != '\0')
-length++;
-if (length < field_width)
-{
-for (j = 0; j < field_width - length; j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
-j = 0;
-while (str[j] != '\0')
-{
-buffer[buffer_index++] = str[j];
-nb++;
-j++;
-}
-}
-else
-{
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'x';
-sprintf(temp_buffer, "%lx", (unsigned long)ptr);
-length = 0;
-while (temp_buffer[length] != '\0')
-length++;
-if (length + 2 < field_width)
-{
-for (j = 0; j < field_width - (length + 2); j++)
-{
-buffer[buffer_index++] = pad_char;
-nb++;
-}
-}
-j = 0;
-while (temp_buffer[j] != '\0')
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-j++;
-}
-nb += 2;
-}
-break;
-case '%':
-buffer[buffer_index++] = '%';
-nb++;
-break;
+
+
 default:
 buffer[buffer_index++] = '%';
 buffer[buffer_index++] = format[i];
