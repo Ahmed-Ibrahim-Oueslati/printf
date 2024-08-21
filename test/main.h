@@ -11,3 +11,17 @@ int int_to_base(unsigned int num, char *buffer, int buffer_size, int base, int u
 
 
 #endif 
+
+
+add to this code so it can Handle the following custom conversion specifier:
+
+r : prints the reversed string
+
+
+
+add to this code so it can Handle the following custom conversion specifier:
+
+R: prints the rot13'ed string
+
+
+add to this code so it can 
