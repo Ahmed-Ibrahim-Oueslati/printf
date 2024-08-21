@@ -22,7 +22,6 @@ unsigned int unsigned_num;
 void *ptr;
 char temp_buffer[50];
 char buffer[BUFFER_SIZE];
-char flag_plus = 0, flag_space = 0, flag_hash = 0;
 if (!format)
 return ((-1));
 va_start(ap, format);
@@ -31,19 +30,6 @@ while (format[i])
 if (format[i] == '%')
 {
 i++;
-
-flag_plus = flag_space = flag_hash = 0;
-
-while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
-{
-if (format[i] == '+')
-flag_plus = 1;
-else if (format[i] == ' ')
-flag_space = 1;
-else if (format[i] == '#')
-flag_hash = 1;
-i++;
-}
 switch (format[i])
 {
 case 'c':
@@ -90,16 +76,6 @@ break;
 case 'd':
 case 'i':
 num = va_arg(ap, int);
-if (flag_plus && num >= 0)
-{
-buffer[buffer_index++] = '+';
-nb++;
-}
-else if (flag_space && num >= 0)
-{
-buffer[buffer_index++] = ' ';
-nb++;
-}
 sprintf(temp_buffer, "%d", num);
 j = 0;
 while (temp_buffer[j] != '\0')
@@ -131,11 +107,6 @@ j++;
 break;
 case 'o':
 unsigned_num = va_arg(ap, unsigned int);
-if (flag_hash && unsigned_num != 0)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 8, 0);
 for (j = 0; j < length; j++)
 {
@@ -145,12 +116,6 @@ nb++;
 break;
 case 'x':
 unsigned_num = va_arg(ap, unsigned int);
-if (flag_hash && unsigned_num != 0)
-{
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'x';
-nb += 2;
-}
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 0);
 for (j = 0; j < length; j++)
 {
@@ -160,12 +125,6 @@ nb++;
 break;
 case 'X':
 unsigned_num = va_arg(ap, unsigned int);
-if (flag_hash && unsigned_num != 0)
-{
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'X';
-nb += 2;
-}
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 1);
 for (j = 0; j < length; j++)
 {
@@ -199,7 +158,7 @@ nb++;
 j++;
 }
 }
-nb += 2;
+nb += 2; 
 break;
 case '%':
 buffer[buffer_index++] = '%';
