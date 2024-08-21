@@ -1,5 +1,13 @@
 #include "main.h"
 #define BUFFER_SIZE 1024
+
+int _putchar(char c);
+
+void flush_buffer(char *buffer, int length)
+{
+for (int i = 0; i < length; i++)
+_putchar(buffer[i]);
+}
 /**
 * _printf - Prints various types of arguments based on a format string.
 * @format: A string representing the types of arguments passed.
@@ -7,22 +15,21 @@
 *          'b' for binary, 'u' for unsigned, 'o' for octal,
 *          'x' for hex (lowercase), 'X' for hex (uppercase),
 *          'S' for string with non-printable characters as \xXX,
-*          'p' for pointer, and '%%' for a literal '%'.
+*          'p' for pointer, 'r' for reversed string, and '%%' for a literal '%'.
 * @...: A variable number of arguments.
 * Return: Number of characters printed or -1 on error.
 */
 int _printf(const char *format, ...)
 {
 va_list ap;
-int i = 0, j, nb = 0, buffer_index = 0, length;
+int i = 0, j, nb = 0;
 char *str;
 char c;
 long num;
 unsigned long unsigned_num;
 void *ptr;
 char temp_buffer[50];
-char buffer[BUFFER_SIZE];
-char flag_plus = 0, flag_space = 0, flag_hash = 0;
+char flag_plus = 0, flag_space = 0, flag_hash = 0, flag_minus = 0;
 char length_modifier = 0;
 int field_width = 0;
 int precision = -1;
@@ -35,13 +42,13 @@ while (format[i])
 if (format[i] == '%')
 {
 i++;
-flag_plus = flag_space = flag_hash = 0;
+flag_plus = flag_space = flag_hash = flag_minus = 0;
 length_modifier = 0;
 field_width = 0;
 precision = -1;
 pad_char = ' ';
 
-while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
+while (format[i] == '+' || format[i] == ' ' || format[i] == '#' || format[i] == '-')
 {
 if (format[i] == '+')
 flag_plus = 1;
@@ -49,6 +56,8 @@ else if (format[i] == ' ')
 flag_space = 1;
 else if (format[i] == '#')
 flag_hash = 1;
+else if (format[i] == '-')
+flag_minus = 1;
 i++;
 }
 
@@ -82,12 +91,28 @@ if (format[i] == 'l' || format[i] == 'h')
 length_modifier = format[i];
 i++;
 }
-
 switch (format[i])
 {
 case 'c':
 c = va_arg(ap, int);
-buffer[buffer_index++] = c;
+if (flag_minus)
+{
+_putchar(c);
+for (j = 1; j < field_width; j++)
+{
+_putchar(' ');
+nb++;
+}
+}
+else
+{
+for (j = 1; j < field_width; j++)
+{
+_putchar(pad_char);
+nb++;
+}
+_putchar(c);
+}
 nb++;
 break;
 case 's':
@@ -99,21 +124,31 @@ while (str[length] != '\0')
 length++;
 if (precision >= 0 && precision < length)
 length = precision;
+if (flag_minus)
+{
+for (j = 0; j < length; j++)
+_putchar(str[j]);
+while (j < field_width)
+{
+_putchar(' ');
+nb++;
+j++;
+}
+}
+else
+{
 if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
-j = 0;
-while (j < length && str[j] != '\0')
-{
-buffer[buffer_index++] = str[j];
-nb++;
-j++;
+for (j = 0; j < length; j++)
+_putchar(str[j]);
 }
+nb += length;
 break;
 case 'd':
 case 'i':
@@ -124,15 +159,9 @@ num = (short)va_arg(ap, int);
 else
 num = va_arg(ap, int);
 if (flag_plus && num >= 0)
-{
-buffer[buffer_index++] = '+';
-nb++;
-}
+_putchar('+');
 else if (flag_space && num >= 0)
-{
-buffer[buffer_index++] = ' ';
-nb++;
-}
+_putchar(' ');
 sprintf(temp_buffer, "%ld", num);
 length = 0;
 while (temp_buffer[length] != '\0')
@@ -141,7 +170,7 @@ if (precision > length)
 {
 for (j = 0; j < precision - length; j++)
 {
-buffer[buffer_index++] = '0';
+_putchar('0');
 nb++;
 }
 }
@@ -149,17 +178,13 @@ else if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
-j = 0;
-while (temp_buffer[j] != '\0')
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-j++;
-}
+for (j = 0; j < length; j++)
+_putchar(temp_buffer[j]);
+nb += length;
 break;
 case 'b':
 unsigned_num = va_arg(ap, unsigned int);
@@ -168,15 +193,13 @@ if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
 for (j = 0; j < length; j++)
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-}
+_putchar(temp_buffer[j]);
+nb += length;
 break;
 case 'u':
 if (length_modifier == 'l')
@@ -193,7 +216,7 @@ if (precision > length)
 {
 for (j = 0; j < precision - length; j++)
 {
-buffer[buffer_index++] = '0';
+_putchar('0');
 nb++;
 }
 }
@@ -201,17 +224,13 @@ else if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
-j = 0;
-while (temp_buffer[j] != '\0')
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-j++;
-}
+for (j = 0; j < length; j++)
+_putchar(temp_buffer[j]);
+nb += length;
 break;
 case 'o':
 if (length_modifier == 'l')
@@ -222,7 +241,7 @@ else
 unsigned_num = va_arg(ap, unsigned int);
 if (flag_hash && unsigned_num != 0)
 {
-buffer[buffer_index++] = '0';
+_putchar('0');
 nb++;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 8, 0);
@@ -230,7 +249,7 @@ if (precision > length)
 {
 for (j = 0; j < precision - length; j++)
 {
-buffer[buffer_index++] = '0';
+_putchar('0');
 nb++;
 }
 }
@@ -238,15 +257,13 @@ else if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
 for (j = 0; j < length; j++)
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-}
+_putchar(temp_buffer[j]);
+nb += length;
 break;
 case 'x':
 if (length_modifier == 'l')
@@ -257,8 +274,8 @@ else
 unsigned_num = va_arg(ap, unsigned int);
 if (flag_hash && unsigned_num != 0)
 {
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'x';
+_putchar('0');
+_putchar('x');
 nb += 2;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 0);
@@ -266,7 +283,7 @@ if (precision > length)
 {
 for (j = 0; j < precision - length; j++)
 {
-buffer[buffer_index++] = '0';
+_putchar('0');
 nb++;
 }
 }
@@ -274,15 +291,13 @@ else if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
 for (j = 0; j < length; j++)
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-}
+_putchar(temp_buffer[j]);
+nb += length;
 break;
 case 'X':
 if (length_modifier == 'l')
@@ -293,8 +308,8 @@ else
 unsigned_num = va_arg(ap, unsigned int);
 if (flag_hash && unsigned_num != 0)
 {
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'X';
+_putchar('0');
+_putchar('X');
 nb += 2;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 1);
@@ -302,7 +317,7 @@ if (precision > length)
 {
 for (j = 0; j < precision - length; j++)
 {
-buffer[buffer_index++] = '0';
+_putchar('0');
 nb++;
 }
 }
@@ -310,15 +325,13 @@ else if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
 for (j = 0; j < length; j++)
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-}
+_putchar(temp_buffer[j]);
+nb += length;
 break;
 case 'p':
 ptr = va_arg(ap, void *);
@@ -332,22 +345,17 @@ if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
-j = 0;
-while (str[j] != '\0')
-{
-buffer[buffer_index++] = str[j];
-nb++;
-j++;
-}
+for (j = 0; j < length; j++)
+_putchar(str[j]);
 }
 else
 {
-buffer[buffer_index++] = '0';
-buffer[buffer_index++] = 'x';
+_putchar('0');
+_putchar('x');
 sprintf(temp_buffer, "%lx", (unsigned long)ptr);
 length = 0;
 while (temp_buffer[length] != '\0')
@@ -356,45 +364,80 @@ if (length + 2 < field_width)
 {
 for (j = 0; j < field_width - (length + 2); j++)
 {
-buffer[buffer_index++] = pad_char;
+_putchar(pad_char);
 nb++;
 }
 }
-j = 0;
-while (temp_buffer[j] != '\0')
-{
-buffer[buffer_index++] = temp_buffer[j];
-nb++;
-j++;
-}
+for (j = 0; j < length; j++)
+_putchar(temp_buffer[j]);
 nb += 2;
 }
 break;
 case '%':
-buffer[buffer_index++] = '%';
+_putchar('%');
 nb++;
 break;
 default:
-buffer[buffer_index++] = '%';
-buffer[buffer_index++] = format[i];
+_putchar('%');
+_putchar(format[i]);
 nb += 2;
 break;
 }
 }
 else
 {
-buffer[buffer_index++] = format[i];
+_putchar(format[i]);
 nb++;
-}
-if (buffer_index >= BUFFER_SIZE)
-{
-flush_buffer(buffer, buffer_index);
-buffer_index = 0;
 }
 i++;
 }
-if (buffer_index > 0)
-flush_buffer(buffer, buffer_index);
 va_end(ap);
 return ((nb));
+}
+
+int int_to_binary(unsigned int num, char *buffer, size_t buffer_size)
+{
+int i = 0;
+if (buffer_size == 0)
+return (0);
+do
+{
+if (i >= buffer_size - 1)
+break;
+buffer[i++] = (num & 1) ? '1' : '0';
+num >>= 1;
+} while (num != 0);
+buffer[i] = '\0';
+
+for (int start = 0, end = i - 1; start < end; start++, end--)
+{
+char temp = buffer[start];
+buffer[start] = buffer[end];
+buffer[end] = temp;
+}
+return (i);
+}
+
+int int_to_base(unsigned long num, char *buffer, size_t buffer_size, int base, int uppercase)
+{
+const char *digits = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
+int i = 0;
+if (base < 2 || base > 16)
+return (0);
+do
+{
+if (i >= buffer_size - 1)
+break;
+buffer[i++] = digits[num % base];
+num /= base;
+} while (num != 0);
+buffer[i] = '\0';
+
+for (int start = 0, end = i - 1; start < end; start++, end--)
+{
+char temp = buffer[start];
+buffer[start] = buffer[end];
+buffer[end] = temp;
+}
+return (i);
 }
