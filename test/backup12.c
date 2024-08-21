@@ -25,7 +25,6 @@ char buffer[BUFFER_SIZE];
 char flag_plus = 0, flag_space = 0, flag_hash = 0;
 char length_modifier = 0;
 int field_width = 0;
-int precision = -1;
 char pad_char = ' ';
 if (!format)
 return ((-1));
@@ -35,10 +34,10 @@ while (format[i])
 if (format[i] == '%')
 {
 i++;
+
 flag_plus = flag_space = flag_hash = 0;
 length_modifier = 0;
 field_width = 0;
-precision = -1;
 pad_char = ' ';
 
 while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
@@ -66,17 +65,6 @@ i++;
 }
 }
 
-if (format[i] == '.')
-{
-i++;
-precision = 0;
-while (format[i] >= '0' && format[i] <= '9')
-{
-precision = precision * 10 + (format[i] - '0');
-i++;
-}
-}
-
 if (format[i] == 'l' || format[i] == 'h')
 {
 length_modifier = format[i];
@@ -97,8 +85,6 @@ str = "(nil)";
 length = 0;
 while (str[length] != '\0')
 length++;
-if (precision >= 0 && precision < length)
-length = precision;
 if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
@@ -108,7 +94,7 @@ nb++;
 }
 }
 j = 0;
-while (j < length && str[j] != '\0')
+while (str[j] != '\0')
 {
 buffer[buffer_index++] = str[j];
 nb++;
@@ -137,15 +123,7 @@ sprintf(temp_buffer, "%ld", num);
 length = 0;
 while (temp_buffer[length] != '\0')
 length++;
-if (precision > length)
-{
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-}
-else if (length < field_width)
+if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
@@ -189,15 +167,7 @@ sprintf(temp_buffer, "%lu", unsigned_num);
 length = 0;
 while (temp_buffer[length] != '\0')
 length++;
-if (precision > length)
-{
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-}
-else if (length < field_width)
+if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
@@ -226,15 +196,7 @@ buffer[buffer_index++] = '0';
 nb++;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 8, 0);
-if (precision > length)
-{
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-}
-else if (length < field_width)
+if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
@@ -262,15 +224,7 @@ buffer[buffer_index++] = 'x';
 nb += 2;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 0);
-if (precision > length)
-{
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-}
-else if (length < field_width)
+if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
@@ -298,15 +252,7 @@ buffer[buffer_index++] = 'X';
 nb += 2;
 }
 length = int_to_base(unsigned_num, temp_buffer, sizeof(temp_buffer), 16, 1);
-if (precision > length)
-{
-for (j = 0; j < precision - length; j++)
-{
-buffer[buffer_index++] = '0';
-nb++;
-}
-}
-else if (length < field_width)
+if (length < field_width)
 {
 for (j = 0; j < field_width - length; j++)
 {
