@@ -7,7 +7,7 @@
 *          'b' for binary, 'u' for unsigned, 'o' for octal,
 *          'x' for hex (lowercase), 'X' for hex (uppercase),
 *          'S' for string with non-printable characters as \xXX,
-*          'p' for pointer, and '%%' for a literal '%'.
+*          'p' for pointer, 'r' for reversed string, and '%%' for a literal '%'.
 * @...: A variable number of arguments.
 * Return: Number of characters printed or -1 on error.
 */
@@ -28,7 +28,7 @@ int field_width = 0;
 int precision = -1;
 char pad_char = ' ';
 if (!format)
-return (((-1)));
+return ((-1));
 va_start(ap, format);
 while (format[i])
 {
@@ -155,7 +155,6 @@ else if (length_modifier == 'h')
 num = (short)va_arg(ap, int);
 else
 num = va_arg(ap, int);
-
 if (flag_plus && num >= 0)
 {
 buffer[buffer_index++] = '+';
@@ -215,7 +214,58 @@ j++;
 }
 }
 break;
+case 'r':
+str = va_arg(ap, char *);
+if (str == NULL)
+str = "(nil)";
 
+length = 0;
+while (str[length] != '\0')
+length++;
+
+if (precision >= 0 && precision < length)
+length = precision;
+
+for (j = length - 1; j >= 0; j--)
+temp_buffer[length - 1 - j] = str[j];
+temp_buffer[length] = '\0';  
+if (flag_minus)
+{
+
+j = 0;
+while (temp_buffer[j] != '\0')
+{
+buffer[buffer_index++] = temp_buffer[j];
+nb++;
+j++;
+}
+while (j < field_width)
+{
+buffer[buffer_index++] = ' ';
+nb++;
+j++;
+}
+}
+else
+{
+
+if (length < field_width)
+{
+for (j = 0; j < field_width - length; j++)
+{
+buffer[buffer_index++] = pad_char;
+nb++;
+}
+}
+j = 0;
+while (temp_buffer[j] != '\0')
+{
+buffer[buffer_index++] = temp_buffer[j];
+nb++;
+j++;
+}
+}
+break;
 default:
 buffer[buffer_index++] = '%';
 buffer[buffer_index++] = format[i];
