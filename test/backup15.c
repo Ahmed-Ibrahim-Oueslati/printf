@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <string.h>
+#include <string.h>  
 #define BUFFER_SIZE 50
 /**
 * _printf - Prints various types of arguments based on a format string.
@@ -10,7 +10,7 @@
 *          'c' for char, 's' for string, 'd' or 'i' for integers,
 *          'b' for binary, 'u' for unsigned, 'o' for octal,
 *          'x' for hex (lowercase), 'X' for hex (uppercase),
-*          'r' for reversed string, 'R' for ROT13'ed string, and '%%' for a literal '%'.
+*          'r' for reversed string, and '%%' for a literal '%'.
 * @...: A variable number of arguments.
 * Return: Number of characters printed or -1 on error.
 */
@@ -175,37 +175,10 @@ case 'r':
 str = va_arg(ap, char *);
 if (str == NULL)
 str = "(nil)";
-length = strlen(str);
+length = strlen(str); 
 for (j = length - 1; j >= 0; j--)
 {
-_putchar(str[j]);
-nb++;
-}
-if (left_justify)
-while (nb < field_width)
-{
-_putchar(' ');
-nb++;
-}
-break;
-case 'R':
-str = va_arg(ap, char *);
-if (str == NULL)
-str = "(nil)";
-for (j = 0; str[j] != '\0'; j++)
-{
-if ((str[j] >= 'a' && str[j] <= 'z'))
-{
-	_putchar(((str[j] - 'a' + 13) % 26) + 'a');
-}
-else if ((str[j] >= 'A' && str[j] <= 'Z'))
-{
-	_putchar(((str[j] - 'A' + 13) % 26) + 'A');
-}
-else
-{
-	_putchar(str[j]);
-}
+_putchar(str[j]); 
 nb++;
 }
 if (left_justify)
