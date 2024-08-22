@@ -2,7 +2,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <string.h>  
 #define BUFFER_SIZE 50
 /**
 * _printf - Prints various types of arguments based on a format string.
@@ -10,7 +9,7 @@
 *          'c' for char, 's' for string, 'd' or 'i' for integers,
 *          'b' for binary, 'u' for unsigned, 'o' for octal,
 *          'x' for hex (lowercase), 'X' for hex (uppercase),
-*          'r' for reversed string, and '%%' for a literal '%'.
+*          and '%%' for a literal '%'.
 * @...: A variable number of arguments.
 * Return: Number of characters printed or -1 on error.
 */
@@ -23,7 +22,7 @@ char c;
 int num;
 unsigned int unsigned_num;
 char buffer[BUFFER_SIZE];
-int left_justify = 0;
+int left_justify = 0; 
 int field_width = 0;
 if (!format)
 return ((-1));
@@ -35,11 +34,13 @@ if (format[i] == '%')
 i++;
 left_justify = 0;
 field_width = 0;
+
 if (format[i] == '-')
 {
 left_justify = 1;
 i++;
 }
+
 while (format[i] >= '0' && format[i] <= '9')
 {
 field_width = field_width * 10 + (format[i] - '0');
@@ -162,23 +163,6 @@ length = int_to_base(unsigned_num, buffer, sizeof(buffer), 16, 1);
 for (j = 0; j < length; j++)
 {
 _putchar(buffer[j]);
-nb++;
-}
-if (left_justify)
-while (nb < field_width)
-{
-_putchar(' ');
-nb++;
-}
-break;
-case 'r':
-str = va_arg(ap, char *);
-if (str == NULL)
-str = "(nil)";
-length = strlen(str); 
-for (j = length - 1; j >= 0; j--)
-{
-_putchar(str[j]); 
 nb++;
 }
 if (left_justify)
